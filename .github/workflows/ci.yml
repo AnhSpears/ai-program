@@ -52,3 +52,24 @@ jobs:
       - name: Push Bot image
         run: |
           docker push anhsp/ai-program-bot:latest
+  deploy-to-vps:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Install SSH client
+        run: sudo apt-get update && sudo apt-get install -y openssh-client
+
+      - name: Setup SSH key
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
+
+      - name: Deploy to VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+            cd ~/ai-program/infra
+            docker-compose pull api
+            docker-compose pull bot
+            docker-compose up -d
+          EOF
