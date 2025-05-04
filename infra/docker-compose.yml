@@ -5,9 +5,9 @@ services:
     image: anhsp/ai-program-api:latest
     env_file:
       - ../.env
-    restart: always
     ports:
       - "5000:5000"
+    restart: always
 
   bot:
     image: anhsp/ai-program-bot:latest
@@ -17,6 +17,7 @@ services:
 
   redis:
     image: redis:6-alpine
+    restart: always
 
   nginx:
     image: nginx:stable-alpine
@@ -29,6 +30,8 @@ services:
     depends_on:
       - api
       - bot
+    restart: always
 
 volumes:
   certs:
+
