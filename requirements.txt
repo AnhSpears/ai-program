@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 flask
 flask-session
 flask-limiter
@@ -7,3 +8,14 @@ azure-storage-blob
 PyPDF2
 python-docx
 faiss-cpu
+=======
+Flask>=2.2
+openai>=0.27
+redis>=4.0
+Flask-Session>=0.4
+Flask-Limiter>=2.0
+discord.py>=2.0
+faiss-cpu
+textract
+pytest>=7.0
+>>>>>>> origin/master
