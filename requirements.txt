@@ -9,3 +9,4 @@ python-docx
 faiss-cpu
 requests
 discord.py
+pytest
