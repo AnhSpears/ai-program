@@ -1,0 +1,12 @@
+flask
+flask-session
+flask-limiter
+redis
+openai
+azure-storage-blob
+PyPDF2
+python-docx
+faiss-cpu
+requests
+discord.py
+pytest
