@@ -52,7 +52,7 @@ jobs:
       - name: Push Bot image
         run: |
           docker push anhsp/ai-program-bot:latest
-deploy-to-vps:
+  deploy-to-vps:
     needs: build-and-push
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
