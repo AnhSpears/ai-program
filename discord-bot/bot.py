@@ -1,11 +1,20 @@
+# discord-bot/bot.py
+
 import os
 import discord
 from discord.ext import commands
+import openai
 
-# prefix hoặc dùng slash, tùy bạn
-bot = commands.Bot(command_prefix="!")
+# —————— Setup OpenAI ——————
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# load tất cả các command modules trong thư mục commands/
+# —————— Setup Discord Bot với intents ——————
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+# —————— Load các module commands nếu bạn còn dùng ——————
 for filename in os.listdir("./commands"):
     if filename.endswith(".py"):
         bot.load_extension(f"commands.{filename[:-3]}")
@@ -14,8 +23,36 @@ for filename in os.listdir("./commands"):
 async def on_ready():
     print(f"Logged in as {bot.user} (ID: {bot.user.id})")
 
-# Lấy token từ biến môi trường
-DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+# —————— Chat tự nhiên: bắt mọi message không phải bot ——————
+@bot.event
+async def on_message(message):
+    # bỏ qua chính bot
+    if message.author.bot:
+        return
 
+    # nếu bạn vẫn muốn hỗ trợ prefix commands,
+    # gọi tiếp process_commands trước khi chat AI
+    await bot.process_commands(message)
+
+    # giờ handle free-form chat:
+    prompt = message.content
+
+    # Gửi prompt đến OpenAI ChatCompletion
+    try:
+        resp = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user",    "content": prompt}
+            ],
+            temperature=0.7,
+        )
+        answer = resp.choices[0].message.content.strip()
+        await message.channel.send(answer)
+    except Exception as e:
+        await message.channel.send("⚠️ Có lỗi khi gọi OpenAI:\n" + str(e))
+
+# —————— Chạy bot ——————
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 if __name__ == "__main__":
     bot.run(DISCORD_TOKEN)
