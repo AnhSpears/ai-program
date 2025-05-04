@@ -69,7 +69,6 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
             cd ~/ai-program/infra
-            docker-compose pull api
-            docker-compose pull bot
-            docker-compose up -d
+            docker-compose pull
+            docker-compose up -d --remove-orphans
           EOF
