@@ -39,16 +39,16 @@ jobs:
 
       - name: Build API image
         run: |
-          docker build -t yourname/ai-program-api:latest api/
+          docker build -t anhsp/ai-program-api:latest api/
 
       - name: Push API image
         run: |
-          docker push yourname/ai-program-api:latest
+          docker push anhsp/ai-program-api:latest
 
       - name: Build Discord Bot image
         run: |
-          docker build -t yourname/ai-program-bot:latest discord-bot/
+          docker build -t anhsp/ai-program-bot:latest discord-bot/
 
       - name: Push Bot image
         run: |
-          docker push yourname/ai-program-bot:latest
+          docker push anhsp/ai-program-bot:latest
