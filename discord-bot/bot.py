@@ -1,6 +1,7 @@
 # discord-bot/bot.py
 
 import os, discord
+from openai import OpenAI
 from discord.ext import commands
 import openai
 
@@ -20,7 +21,7 @@ class AIClient(commands.Bot):
                 await self.load_extension(f"commands.{filename[:-3]}")
 
         # sau khi load xong, có thể khởi tạo thread background nếu cần
-
+client = OpenAI()
 # khởi tạo bot
 bot = AIClient()
 
@@ -34,13 +35,13 @@ async def on_message(message):
         return
     await bot.process_commands(message)
     # free-form chat...
-    resp = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role":"system","content":"You are a helpful assistant."},
-            {"role":"user","content":message.content}
-        ],
-        temperature=0.7
+    resp = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": message.content},
+    ],
+    temperature=0.7,
     )
     await message.channel.send(resp.choices[0].message.content.strip())
 
