@@ -12,12 +12,17 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 intents = discord.Intents.default()
 intents.message_content = True
 
-bot = commands.Bot(command_prefix="!", intents=intents)
+class AIClient(commands.Bot):
+    def __init__(self):
+        super().__init__(command_prefix="!", intents=intents)
 
-# —————— Load các module commands nếu bạn còn dùng ——————
-for filename in os.listdir("./commands"):
-    if filename.endswith(".py"):
-        bot.load_extension(f"commands.{filename[:-3]}")
+    async def setup_hook(self):
+        # load all cogs asynchronously
+        for filename in os.listdir("./commands"):
+            if filename.endswith(".py"):
+                await self.load_extension(f"commands.{filename[:-3]}")
+bot = AIClient()
+
 
 @bot.event
 async def on_ready():
